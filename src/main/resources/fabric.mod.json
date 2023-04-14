@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "sharematica",
+  "version": "${version}",
+  "name": "Sharematica",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/qpcru/Sharematica"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/Sharematica/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.github.tatercertified.sharematica.client.SharematicaClient"
+    ],
+    "main": [
+      "com.github.tatercertified.sharematica.server.SharematicaServer"
+    ]
+  },
+  "mixins": [
+    "sharematica-client.mixins.json",
+    "litematica.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
