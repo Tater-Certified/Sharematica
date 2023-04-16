@@ -7,12 +7,17 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+
     maven {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
     }
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.codemc.org/repository/maven-public' }
+
 }
 
 dependencies {
@@ -26,6 +31,14 @@ dependencies {
         // Masa's mods
     modImplementation "curse.maven:litematica-${project.litematica_minecraft_version}-308892:${project.litematica}"
     modImplementation "curse.maven:malilib-${project.litematica_minecraft_version}-303119:${project.malilib}"
+
+    implementation "com.simtechdata:WaifUPnP:1.0"
+
+    api("com.github.RelativityMC.netty-raknet:netty-raknet-common:${project.netty_raknet_version}") {
+        transitive = false
+    }
+    api("com.github.RelativityMC.netty-raknet:netty-raknet-client:${project.netty_raknet_version}")
+    api("com.github.RelativityMC.netty-raknet:netty-raknet-server:${project.netty_raknet_version}")
     }
 
 processResources {
