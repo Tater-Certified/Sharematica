@@ -15,7 +15,7 @@
     "client": [
       "com.github.tatercertified.sharematica.client.SharematicaClient"
     ],
-    "main": [
+    "server": [
       "com.github.tatercertified.sharematica.server.SharematicaServer"
     ]
   },
