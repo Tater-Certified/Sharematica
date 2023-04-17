@@ -58,12 +58,12 @@ public class SharematicaServer implements DedicatedServerModInitializer {
             sender.sendPacket(SHAREMATICA_SEND_SCHEMATIC_LIST, schematics);
         });
         ServerPlayNetworking.registerGlobalReceiver(SHAREMATICA_REQUEST_SCHEMATIC, (server, player, handler, buf, sender) -> {
-            packet_enderchest.add(buf.readString());
-            File schematic = getSchematic();
-            final ByteBuf buf1 = Unpooled.buffer();
+            File schematic = getSchematic(buf.readString());
+            final PacketByteBuf buf1 = PacketByteBufs.create();
             try {
                 buf1.writeBytes(Files.readAllBytes(schematic.toPath()));
                 serverChannel.writeAndFlush(buf1).sync();
+                System.out.println("Server sent Schematic to Client!");
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -87,8 +87,7 @@ public class SharematicaServer implements DedicatedServerModInitializer {
         return folder.list();
     }
 
-    private File getSchematic() {
-        String name = (String) packet_enderchest.poll();
+    private File getSchematic(String name) {
         return new File(path + "/" + name + ".litematic");
     }
 

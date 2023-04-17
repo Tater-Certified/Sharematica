@@ -77,7 +77,7 @@ public class Config {
                 properties.setProperty(OPTIMIZED_NETWORKING_KEY, "true");
             }
             if (!properties.containsKey(OPEN_PORT_KEY)) {
-                properties.setProperty(OPEN_PORT_KEY, "false");
+                properties.setProperty(OPEN_PORT_KEY, "true");
             }
         }
         if (Objects.equals(Sharematica.ENVIRONMENT, "client")) {
@@ -99,10 +99,10 @@ public class Config {
      */
     private static void parse() {
         fillDefaults();
+        port = Integer.parseInt(properties.getProperty(PORT_KEY));
         if (Objects.equals(Sharematica.ENVIRONMENT, "server")) {
             upnp = Boolean.parseBoolean(properties.getProperty(OPEN_PORT_KEY));
             raknet = Boolean.parseBoolean(properties.getProperty(OPTIMIZED_NETWORKING_KEY));
-            port = Integer.parseInt(properties.getProperty(PORT_KEY));
         }
     }
 

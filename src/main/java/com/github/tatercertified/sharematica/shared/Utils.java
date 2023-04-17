@@ -38,9 +38,10 @@ public class Utils {
     public static Channel clientChannel;
     public static void openRaknetty() throws InterruptedException {
         if (Config.upnp) {
-            UPnP.openPortUDP(Config.port);
+            System.out.println("UPnP: " + UPnP.openPortUDP(Config.port));
         }
         if (Config.raknet && Objects.equals(Sharematica.ENVIRONMENT, "server")) {
+            System.out.println("Starting Raknetty Server!");
             serverChannel = new ServerBootstrap()
                     .group(ioGroup, childGroup)
                     .channel(RakNetServer.CHANNEL)
@@ -51,6 +52,7 @@ public class Utils {
                             ch.pipeline().addLast(UserDataCodec.NAME, new UserDataCodec(0xFE));
                         }
                     }).bind(localhost).sync().channel();
+            System.out.println("Raknetty Server Started!");
         }
         if (Objects.equals(Sharematica.ENVIRONMENT, "client")) {
             System.out.println("Starting Raknetty Client!");
@@ -67,6 +69,7 @@ public class Utils {
                             ch.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
                                 protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws IOException {
                                     byte[] data = buf.array();
+                                    System.out.println("Client received Schematic from Server!");
                                     Files.write(path, data);
                                 }
                             });
