@@ -1,20 +1,17 @@
 package com.github.tatercertified.sharematica.client;
 
 import com.github.tatercertified.sharematica.shared.Config;
+import com.github.tatercertified.sharematica.shared.Utils;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static com.github.tatercertified.sharematica.Sharematica.*;
 
@@ -49,6 +46,13 @@ public class SharematicaClient implements ClientModInitializer {
             ClientPlayNetworking.send(SHAREMATICA_SYNC_PACKET_ID, passedData);
             System.out.println("Sent Sync Packet");
 
+            // Open Raknetty
+            try {
+                Utils.openRaknetty();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             // Example server schematics grab
             PacketByteBuf get_schematics = PacketByteBufs.empty();
             ClientPlayNetworking.send(SHAREMATICA_SEND_SCHEMATIC_LIST, get_schematics);
@@ -60,6 +64,14 @@ public class SharematicaClient implements ClientModInitializer {
             ClientPlayNetworking.send(SHAREMATICA_REQUEST_SCHEMATIC, request);
 
         });
+
+        ClientLifecycleEvents.CLIENT_STOPPING.register((client -> {
+            try {
+                Utils.stopRaknetty();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }));
     }
 
     private void serverSchematics() {

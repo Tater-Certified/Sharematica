@@ -69,15 +69,15 @@ public class Config {
         if (!properties.containsKey(CONFIG_VERSION_KEY)) {
             properties.setProperty(CONFIG_VERSION_KEY, cfgver);
         }
+        if (!properties.containsKey(PORT_KEY)) {
+            properties.setProperty(PORT_KEY, "25565");
+        }
         if (Objects.equals(Sharematica.ENVIRONMENT, "server")) {
             if (!properties.containsKey(OPTIMIZED_NETWORKING_KEY)) {
                 properties.setProperty(OPTIMIZED_NETWORKING_KEY, "true");
             }
             if (!properties.containsKey(OPEN_PORT_KEY)) {
                 properties.setProperty(OPEN_PORT_KEY, "false");
-            }
-            if (!properties.containsKey(PORT_KEY)) {
-                properties.setProperty(PORT_KEY, "25565");
             }
         }
         if (Objects.equals(Sharematica.ENVIRONMENT, "client")) {
@@ -99,9 +99,11 @@ public class Config {
      */
     private static void parse() {
         fillDefaults();
-        upnp = Boolean.parseBoolean(properties.getProperty(OPEN_PORT_KEY));
-        raknet = Boolean.parseBoolean(properties.getProperty(OPTIMIZED_NETWORKING_KEY));
-        port = Integer.parseInt(properties.getProperty(PORT_KEY));
+        if (Objects.equals(Sharematica.ENVIRONMENT, "server")) {
+            upnp = Boolean.parseBoolean(properties.getProperty(OPEN_PORT_KEY));
+            raknet = Boolean.parseBoolean(properties.getProperty(OPTIMIZED_NETWORKING_KEY));
+            port = Integer.parseInt(properties.getProperty(PORT_KEY));
+        }
     }
 
 }

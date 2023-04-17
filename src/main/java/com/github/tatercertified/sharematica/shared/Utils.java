@@ -34,8 +34,8 @@ public class Utils {
     static final EventLoopGroup ioGroup = new NioEventLoopGroup();
     static final EventLoopGroup childGroup = new DefaultEventLoopGroup();
     static final InetSocketAddress localhost = new InetSocketAddress("localhost", Config.port);
-    static Channel serverChannel;
-    static Channel clientChannel;
+    public static Channel serverChannel;
+    public static Channel clientChannel;
     public static void openRaknetty() throws InterruptedException {
         if (Config.upnp) {
             UPnP.openPortUDP(Config.port);
@@ -49,15 +49,11 @@ public class Utils {
                     .childHandler(new ChannelInitializer<Channel>() {
                         protected void initChannel(Channel ch) {
                             ch.pipeline().addLast(UserDataCodec.NAME, new UserDataCodec(0xFE));
-                            ch.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
-                                protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) {
-                                    //TODO send data
-                                }
-                            });
                         }
                     }).bind(localhost).sync().channel();
         }
         if (Objects.equals(Sharematica.ENVIRONMENT, "client")) {
+            System.out.println("Starting Raknetty Client!");
             clientChannel = new Bootstrap()
                     .group(ioGroup)
                     .channel(RakNetClient.THREADED_CHANNEL)
@@ -68,8 +64,15 @@ public class Utils {
                     .handler(new ChannelInitializer<Channel>() {
                         protected void initChannel(Channel ch) {
                             ch.pipeline().addLast(UserDataCodec.NAME, new UserDataCodec(0xFE));
+                            ch.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+                                protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws IOException {
+                                    byte[] data = buf.array();
+                                    Files.write(path, data);
+                                }
+                            });
                         }
                     }).connect(localhost).sync().channel();
+            System.out.println("Raknetty Client Started!");
         }
     }
 
