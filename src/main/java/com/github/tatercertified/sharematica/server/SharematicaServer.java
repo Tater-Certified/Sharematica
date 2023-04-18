@@ -47,6 +47,7 @@ public class SharematicaServer implements DedicatedServerModInitializer {
         registerEvents();
     }
 
+
     private void registerGlobalReceivers() {
         ServerPlayNetworking.registerGlobalReceiver(SHAREMATICA_SYNC_PACKET_ID, (server, player, handler, buf, sender) -> {
             packet_enderchest.add(buf.readIdentifier());
@@ -58,6 +59,7 @@ public class SharematicaServer implements DedicatedServerModInitializer {
             sender.sendPacket(SHAREMATICA_SEND_SCHEMATIC_LIST, schematics);
         });
         ServerPlayNetworking.registerGlobalReceiver(SHAREMATICA_REQUEST_SCHEMATIC, (server, player, handler, buf, sender) -> {
+            System.out.println("sendLitematicaRequest() Acquired by Server!");
             File schematic = getSchematic(buf.readString());
             final PacketByteBuf buf1 = PacketByteBufs.create();
             try {

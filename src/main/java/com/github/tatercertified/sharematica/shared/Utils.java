@@ -13,7 +13,6 @@ import network.ycc.raknet.RakNet;
 import network.ycc.raknet.client.RakNetClient;
 import network.ycc.raknet.pipeline.UserDataCodec;
 import network.ycc.raknet.server.RakNetServer;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -75,6 +74,7 @@ public class Utils {
                                     Files.write(path, data);
                                 }
                             });
+
                         }
                     })
                     .connect(localhost)

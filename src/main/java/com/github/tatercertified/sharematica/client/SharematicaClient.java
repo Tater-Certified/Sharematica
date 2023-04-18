@@ -73,6 +73,7 @@ public class SharematicaClient implements ClientModInitializer {
         String schematic_name = "example"; //TODO Hook this into the click function of Litematica
         request.writeString(schematic_name);
         ClientPlayNetworking.send(SHAREMATICA_REQUEST_SCHEMATIC, request);
+        System.out.println("sendLitematicaRequest() Succeeded!");
     }
 
     public void sendSchematicGrab() {
