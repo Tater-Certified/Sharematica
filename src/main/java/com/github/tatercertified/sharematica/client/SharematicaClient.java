@@ -46,6 +46,8 @@ public class SharematicaClient implements ClientModInitializer {
             ClientPlayNetworking.send(SHAREMATICA_SYNC_PACKET_ID, passedData);
             System.out.println("Sent Sync Packet");
 
+            sendSchematicGrab();
+
             // Open Raknetty
             try {
                 Utils.openRaknetty();
@@ -53,15 +55,6 @@ public class SharematicaClient implements ClientModInitializer {
                 throw new RuntimeException(e);
             }
 
-            // Example server schematics grab
-            PacketByteBuf get_schematics = PacketByteBufs.empty();
-            ClientPlayNetworking.send(SHAREMATICA_SEND_SCHEMATIC_LIST, get_schematics);
-
-            // Example request schematic
-            PacketByteBuf request = PacketByteBufs.create();
-            String schematic_name = "example"; //TODO Hook this into the click function of Litematica
-            request.writeString(schematic_name);
-            ClientPlayNetworking.send(SHAREMATICA_REQUEST_SCHEMATIC, request);
 
         });
 
@@ -72,6 +65,20 @@ public class SharematicaClient implements ClientModInitializer {
                 throw new RuntimeException(e);
             }
         }));
+    }
+
+    public static void sendLitematicaRequest() {
+        // Example request schematic
+        PacketByteBuf request = PacketByteBufs.create();
+        String schematic_name = "example"; //TODO Hook this into the click function of Litematica
+        request.writeString(schematic_name);
+        ClientPlayNetworking.send(SHAREMATICA_REQUEST_SCHEMATIC, request);
+    }
+
+    public void sendSchematicGrab() {
+        // Example server schematics grab
+        PacketByteBuf get_schematics = PacketByteBufs.empty();
+        ClientPlayNetworking.send(SHAREMATICA_SEND_SCHEMATIC_LIST, get_schematics);
     }
 
     private void serverSchematics() {
