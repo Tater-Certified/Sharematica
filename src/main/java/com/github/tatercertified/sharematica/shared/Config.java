@@ -74,7 +74,7 @@ public class Config {
         }
         if (Objects.equals(Sharematica.ENVIRONMENT, "server")) {
             if (!properties.containsKey(OPTIMIZED_NETWORKING_KEY)) {
-                properties.setProperty(OPTIMIZED_NETWORKING_KEY, "true");
+                properties.setProperty(OPTIMIZED_NETWORKING_KEY, "false");
             }
             if (!properties.containsKey(OPEN_PORT_KEY)) {
                 properties.setProperty(OPEN_PORT_KEY, "true");

@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,6 +19,7 @@ import static com.github.tatercertified.sharematica.Sharematica.*;
 public class SharematicaClient implements ClientModInitializer {
 
     public static Queue<Object> packet_enderchest = new ConcurrentLinkedQueue<>();
+    public static Queue<String> schematic_name_enderchest = new ConcurrentLinkedQueue<>();
 
     public SharematicaClient() {
     }
@@ -36,35 +38,52 @@ public class SharematicaClient implements ClientModInitializer {
             packet_enderchest.add(schematics);
             serverSchematics();
         }));
+
+        ClientPlayNetworking.registerGlobalReceiver(SHAREMATICA_REQUEST_SCHEMATIC, ((client, handler, buf, responseSender) -> {
+            byte[] data = new byte[buf.readableBytes()];
+            buf.readBytes(data);
+            try {
+                Utils.decompress(data, Utils.path, schematic_name_enderchest.poll());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Client received Schematic from Server!");
+        }));
     }
 
     public void registerEvents() {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            // Example join packet
-            PacketByteBuf passedData = PacketByteBufs.create();
-            passedData.writeIdentifier(SHAREMATICA_SYNC_PACKET_ID);
-            ClientPlayNetworking.send(SHAREMATICA_SYNC_PACKET_ID, passedData);
-            System.out.println("Sent Sync Packet");
-
+            sendSync();
             sendSchematicGrab();
 
+            //TODO Remove this when Raknet works!
+            sendLitematicaRequest();
+
             // Open Raknetty
-            try {
-                Utils.openRaknetty();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            //try {
+            //    Utils.openRaknetty();
+            //} catch (InterruptedException e) {
+            //    throw new RuntimeException(e);
+            //}
 
 
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register((client -> {
-            try {
-                Utils.stopRaknetty();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            //try {
+            //    Utils.stopRaknetty();
+            //} catch (InterruptedException e) {
+            //    throw new RuntimeException(e);
+            //}
         }));
+    }
+
+    public void sendSync() {
+        // Example join packet
+        PacketByteBuf passedData = PacketByteBufs.create();
+        passedData.writeIdentifier(SHAREMATICA_SYNC_PACKET_ID);
+        ClientPlayNetworking.send(SHAREMATICA_SYNC_PACKET_ID, passedData);
+        System.out.println("Sent Sync Packet");
     }
 
     public static void sendLitematicaRequest() {
@@ -72,6 +91,7 @@ public class SharematicaClient implements ClientModInitializer {
         PacketByteBuf request = PacketByteBufs.create();
         String schematic_name = "example"; //TODO Hook this into the click function of Litematica
         request.writeString(schematic_name);
+        schematic_name_enderchest.add(schematic_name);
         ClientPlayNetworking.send(SHAREMATICA_REQUEST_SCHEMATIC, request);
         System.out.println("sendLitematicaRequest() Succeeded!");
     }
@@ -86,5 +106,4 @@ public class SharematicaClient implements ClientModInitializer {
         //TODO Actually add these schematics to the schematics list
         System.out.println(packet_enderchest.poll());
     }
-
 }
