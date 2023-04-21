@@ -16,6 +16,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.github.tatercertified.sharematica.Sharematica.*;
+import static com.github.tatercertified.sharematica.shared.Raknet.serverChannel;
 import static com.github.tatercertified.sharematica.shared.Utils.*;
 
 public class SharematicaServer implements DedicatedServerModInitializer {

@@ -6,6 +6,8 @@
   "mixins": [
   ],
   "client": [
+    "WidgetFileBrowserBaseMixin",
+    "WidgetDirectoryEntryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
